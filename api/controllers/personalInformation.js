@@ -1,12 +1,14 @@
-const PersonalInformation = require('../models/index');
+const {PersonalInformation} = require('../models/index');
 
 // Create new personal information
 exports.create = async (req, res) => {
+console.log("Creating PersonalInformation with data:", req.body);
   try {
     const personalInfo = new PersonalInformation(req.body);
     await personalInfo.save();
     res.status(201).send(personalInfo);
   } catch (error) {
+    console.error("Error creating PersonalInformation:", error);
     res.status(400).send(error);
   }
 };

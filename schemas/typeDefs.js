@@ -17,7 +17,6 @@ type Query {
     getAllEmployment: [Employment]
   }
 
-
   type Mutation {
     addUser(username: String!, email: String!, password: String!): User
     updateUser(id: ID!, username: String, email: String, password: String): User

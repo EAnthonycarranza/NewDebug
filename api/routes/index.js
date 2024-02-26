@@ -1,13 +1,25 @@
 const express = require('express');
 const router = express.Router();
+const isAdmin = require('../../utils/isAdmin');
+const { authenticate } = require('../../utils/auth');
 
 // Import controllers
+const userController = require('../controllers/users');
 //const admissionAgreementController = require('../controllers/admissionAgreement');
 const personalInformationController = require('../controllers/personalInformation');
+const protectedController = require('../controllers/protection');
 //const medicalInformationController = require('../controllers/medicalInformation');
 //const historyController = require('../controllers/history');
 //const educationController = require('../controllers/education');
 //const employmentController = require('../controllers/employment');
+
+// Protected route that requires authentication
+router.get('/protected-route', authenticate, protectedController.getProtectedData);
+
+// Define the register route
+router.post('/register', userController.register);
+router.post('/login', userController.login);
+router.post('/adminlogin', userController.adminLogin);
 
 // Admission Agreement routes
 //router.get('/admissionAgreement', admissionAgreementController.getAll);
@@ -17,11 +29,12 @@ const personalInformationController = require('../controllers/personalInformatio
 //router.delete('/admissionAgreement/:id', admissionAgreementController.delete);
 
 // Personal Information routes
-router.get('/personalInformation', personalInformationController.getAll);
-router.post('/personalInformation', personalInformationController.create);
-router.get('/personalInformation/:id', personalInformationController.getOne);
-router.put('/personalInformation/:id', personalInformationController.update);
-router.delete('/personalInformation/:id', personalInformationController.delete);
+router.post('/personalInformation', authenticate, personalInformationController.create);
+router.get('/personalInformation', authenticate, personalInformationController.getAll);
+router.get('/personalInformation/:id', authenticate, personalInformationController.getOne);
+router.put('/personalInformation/:id', authenticate, isAdmin, personalInformationController.update);
+router.delete('/personalInformation/:id', authenticate, isAdmin, personalInformationController.delete);
+
 
 // Medical Information routes
 //router.get('/medicalInformation', medicalInformationController.getAll);
