@@ -6,15 +6,15 @@ const typeDefs = gql`
     getAdmissionAgreement(id: ID!): AdmissionAgreement
     getAllAdmissionAgreements: [AdmissionAgreement]
     getPersonalInformation(id: ID!): PersonalInformation
-    GetMedicalInformation(id: ID!): MedicalInformation
-    Gethistory(id: ID!): History
-    GetEducation(id: ID!): Education
-    GetEmployment(id: ID!): Employment
-    GetAllPersonalInformation: [PersonalInformation]
-    GetAllMedicalInformation: [MedicalInformation]
-    GetAllHistory: [History]
-    GetAllEducation: [Education]
-    GetAllEmployment: [Employment]
+    getMedicalInformation(id: ID!): MedicalInformation
+    gethistory(id: ID!): History
+    getEducation(id: ID!): Education
+    getEmployment(id: ID!): Employment
+    getAllPersonalInformation: [PersonalInformation]
+    getAllMedicalInformation: [MedicalInformation]
+    getAllHistory: [History]
+    getAllEducation: [Education]
+    getAllEmployment: [Employment]
   }
 
   type Mutation {
