@@ -1,12 +1,20 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-  username: String,
-  email: String,
-  password: String,
-  isAdmin: Boolean,
-});
+// Import individual models
+const User = require('./User');
+const AdmissionAgreement = require('./AdmissionAgreement');
+const PersonalInformation = require('./PersonalInformation');
+const MedicalInformation = require('./MedicalInformation');
+const History = require('./History');
+const Education = require('./Education');
+const Employment = require('./Employment');
 
-const User = mongoose.model('User', userSchema);
-
-module.exports = { User };
+module.exports = {
+  User,
+  AdmissionAgreement,
+  PersonalInformation,
+  MedicalInformation,
+  History,
+  Education,
+  Employment,
+};
