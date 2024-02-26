@@ -1,7 +1,7 @@
 const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
-  type Query {
+type Query {
     users: [User]
     getAdmissionAgreement(id: ID!): AdmissionAgreement
     getAllAdmissionAgreements: [AdmissionAgreement]
@@ -17,6 +17,7 @@ const typeDefs = gql`
     getAllEmployment: [Employment]
   }
 
+
   type Mutation {
     addUser(username: String!, email: String!, password: String!): User
     updateUser(id: ID!, username: String, email: String, password: String): User
@@ -24,33 +25,25 @@ const typeDefs = gql`
     register(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
     adminLogin(email: String!, password: String!): Auth
-
     createAdmissionAgreement(personalInformation: PersonalInformationInput, agreementAcknowledgement: AgreementAcknowledgementInput): AdmissionAgreement
     updateAdmissionAgreement(id: ID!, personalInformation: PersonalInformationInput, agreementAcknowledgement: AgreementAcknowledgementInput): AdmissionAgreement
     deleteAdmissionAgreement(id: ID!): Boolean
-
     createPersonalInformation(personalInfo: PersonalInformationInput): PersonalInformation
     updatePersonalInformation(id: ID!, personalInfo: PersonalInformationInput): PersonalInformation
     deletePersonalInformation(id: ID!): Boolean
-
     createMedicalInformation(medicalInfo: MedicalInformationInput): MedicalInformation
     updateMedicalInformation(id: ID!, medicalInfo: MedicalInformationInput): MedicalInformation
     deleteMedicalInformation(id: ID!): Boolean
-
     createHistory(history: HistoryInput): History
     updateHistory(id: ID!, history: HistoryInput): History
     deleteHistory(id: ID!): Boolean
-
     createEducation(education: EducationInput): Education
     updateEducation(id: ID!, education: EducationInput): Education
     deleteEducation(id: ID!): Boolean
-
     createEmployment(employment: EmploymentInput): Employment
     updateEmployment(id: ID!, employment: EmploymentInput): Employment
     deleteEmployment(id: ID!): Boolean
   }
-  
-  
 
   type User {
     _id: ID
