@@ -23,39 +23,39 @@ const resolvers = {
             // Assuming PersonalInformation is a separate collection
             return await PersonalInformation.find({});
           },
-          async GetMedicalInformation(_, { id }) {
+          async getMedicalInformation(_, { id }) {
             // Assuming MedicalInformation is embedded in AdmissionAgreement or a separate collection
             const agreement = await AdmissionAgreement.findById(id);
             return agreement.medicalInformation;
           },
-          async GetAllMedicalInformation() {
+          async getAllMedicalInformation() {
             // Assuming MedicalInformation is a separate collection
             return await MedicalInformation.find({});
           },
-          async GetHistory(_, { id }) {
+          async getHistory(_, { id }) {
             // Assuming History is embedded in AdmissionAgreement or a separate collection
             const agreement = await AdmissionAgreement.findById(id);
             return agreement.history;
           },
-          async GetAllHistory() {
+          async getAllHistory() {
             // Assuming History is a separate collection
             return await History.find({});
           },
-          async GetEducation(_, { id }) {
+          async getEducation(_, { id }) {
             // Assuming Education is embedded in PersonalInformation or a separate collection
             const agreement = await AdmissionAgreement.findById(id);
             return agreement.personalInformation.education;
           },
-          async GetAllEducation() {
+          async getAllEducation() {
             // Assuming Education is a separate collection
             return await Education.find({});
           },
-          async GetEmployment(_, { id }) {
+          async getEmployment(_, { id }) {
             // Assuming Employment is embedded in PersonalInformation or a separate collection
             const agreement = await AdmissionAgreement.findById(id);
             return agreement.personalInformation.employment;
           },
-          async GetAllEmployment() {
+          async getAllEmployment() {
             // Assuming Employment is a separate collection
             return await Employment.find({});
           },
@@ -72,7 +72,7 @@ const resolvers = {
         const updatedUser = await User.findByIdAndUpdate(id, { username, email, password }, { new: true });
         return updatedUser;
       },
-      deleteUser: async (_, { id }) => {
+    deleteUser: async (_, { id }) => {
         await User.findByIdAndDelete(id);
         return true; // Indicates success
       },
@@ -83,7 +83,7 @@ const resolvers = {
       
       const token = signToken(newUser);
       return { token, user: newUser };
-    },
+      },
     login: async (_, { email, password }) => {
       const user = await User.findOne({ email });
       if (!user || !(await bcrypt.compare(password, user.password))) {
