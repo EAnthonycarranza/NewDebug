@@ -3,21 +3,19 @@ const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./schemas');
 const db = require('./config/connections');
 const bodyParser = require('body-parser');
-const userController = require('./api/controllers/users');
 const userRoutes = require('./api/routes/UserRoutes');
+const userController = require('./api/controllers/users'); 
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use('/api', userRoutes);
 
-// Define routes
 app.post('/login', userController.login);
 app.post('/adminlogin', userController.adminLogin);
 app.post('/register', userController.register);
 
 const startServer = async () => {
-  const app = express();
   const server = new ApolloServer({
     typeDefs,
     resolvers,
