@@ -7,7 +7,7 @@ const employmentSchema = new mongoose.Schema({
     occupation: String,
     hourlyIncome: Number,
     paymentFrequency: String, // e.g., Weekly, Bi-weekly, Monthly
-    specialSkills: [String]
+    specialSkills: String
 });
 
 const Employment = mongoose.model('Employment', employmentSchema);

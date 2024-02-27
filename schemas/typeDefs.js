@@ -95,7 +95,7 @@ type Query {
   }
   
   type Employment {
-    currentlyEmployed: String
+    currentlyEmployed: Boolean!
     employmentType: String
     employer: String
     occupation: String
@@ -190,7 +190,7 @@ type Query {
   }
 
   input EmploymentInput {
-    currentlyEmployed: String
+    currentlyEmployed: Boolean!
     employmentType: String
     employer: String
     occupation: String
