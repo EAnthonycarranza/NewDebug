@@ -57,7 +57,6 @@ type Query {
   }
 
   type AdmissionAgreement {
-    id: ID
     studentSignature: String
     witnessSignature: String
     dateSigned: String
