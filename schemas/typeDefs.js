@@ -85,14 +85,6 @@ type Query {
     residencyNumber: String
     primaryLanguageSpoken: String
     referredBy: String
-    education: Education
-    employment: Employment
-    history: History
-    medicalInformation: MedicalInformation
-    reasonForSeekingAdmission: String
-    goals: String
-    talentsAndGifts: String
-    emergencyContacts: [EmergencyContact]
   }
   
   type Education {
@@ -183,7 +175,6 @@ type Query {
     reasonForSeekingAdmission: String
     goals: String
     talentsAndGifts: String
-    emergencyContacts: [EmergencyContactInput]
   }
 
   input EducationInput {
