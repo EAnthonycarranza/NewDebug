@@ -1,29 +1,55 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
-import { LOGIN_USER, ADMIN_LOGIN } from '../utils/mutations';
+import { LOGIN_USER } from '../utils/mutations';
+import authService from '../utils/auth'; // Corrected import
 
-const LoginForm = ({ isAdmin = false }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [login] = useMutation(isAdmin ? ADMIN_LOGIN : LOGIN_USER);
+export default function LoginForm() {
+  const [formState, setFormState] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
+  const [login, { error }] = useMutation(LOGIN_USER);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     try {
-      const { data } = await login({ variables: { email, password } });
-      // Handle storing the token and redirecting the user here
-    } catch (error) {
-      console.error('Login error', error);
+      const { data } = await login({
+        variables: { ...formState },
+      });
+      authService.login(data.login.token); // Correct usage of authService
+      navigate('/dashboard'); // Adjust as per your route
+    } catch (err) {
+      console.error('Login failed', err);
     }
   };
 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormState({
+      ...formState,
+      [name]: value,
+    });
+  };
+
   return (
-    <form onSubmit={handleLogin}>
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-      <button type="submit">Login</button>
+    <form onSubmit={handleSubmit}>
+      <input
+        type="email"
+        name="email"
+        placeholder="Your email"
+        value={formState.email}
+        onChange={handleChange}
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        value={formState.password}
+        onChange={handleChange}
+      />
+      <button type="submit" disabled={!formState.email || !formState.password}>
+        Submit
+      </button>
+      {error && <div>Login failed</div>}
     </form>
   );
-};
-
-export default LoginForm;
+}

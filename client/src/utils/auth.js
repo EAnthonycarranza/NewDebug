@@ -1,15 +1,16 @@
-import decode from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
 
 class AuthService {
   getProfile() {
     let decoded = null; // Define decoded here with a default value
 
     try {
+        
       const token = this.getToken();
       console.log("Token:", token); // Add this line for debugging
       if (!token) return null;
 
-      decoded = decode(token); // Assign a value to decoded
+      decoded = jwtDecode(token);// Assign a value to decoded
       console.log("Decoded Token:", decoded); // Add this line for debugging
     } catch (error) {
       console.error("Error decoding token:", error.message);
@@ -27,18 +28,15 @@ class AuthService {
   isAuthenticated() {
     const token = this.getToken();
     if (!token) return false;
-
+  
     try {
-      const decodedToken = decode(token);
-      const currentTime = Date.now() / 1000; // Convert current time to seconds
-
-      if (decodedToken.exp && decodedToken.exp < currentTime) {
-        // Token has expired
-        // Handle expiration, such as logging the user out
+      const decoded = jwtDecode(token); // Use 'decoded' here
+      const currentTime = Date.now() / 1000;
+  
+      if (decoded.exp && decoded.exp < currentTime) { // Use 'decoded' instead of 'decodedToken'
         console.log("Token has expired");
         return false;
       } else {
-        // Token is valid
         console.log("Token is valid");
         return true;
       }
@@ -46,7 +44,7 @@ class AuthService {
       console.error("Error decoding token:", error.message);
       return false;
     }
-  }
+  }  
 
   loggedIn() {
     const token = this.getToken();
@@ -54,7 +52,7 @@ class AuthService {
   }
 
   isTokenExpired(token) {
-    const decoded = decode(token);
+    const decoded = jwtDecode(token);
     if (decoded.exp < Date.now() / 1000) {
       localStorage.removeItem("id_token");
       return true;

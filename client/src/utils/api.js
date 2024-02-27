@@ -3,8 +3,8 @@ import { setContext } from '@apollo/client/link/context';
 
 // HTTP connection to the API
 const httpLink = createHttpLink({
-  uri: 'http://localhost:4000/graphql', // Make sure this URI matches your GraphQL server URI
-});
+    uri: 'http://localhost:4000/graphql', // Make sure this URI matches your GraphQL server URI
+  });  
 
 // Middleware that attaches the authentication token to requests
 const authLink = setContext((_, { headers }) => {
