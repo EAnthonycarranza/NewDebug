@@ -32,9 +32,8 @@ router.post('/adminlogin', userController.adminLogin);
 router.post('/personalInformation', authenticate, personalInformationController.create);
 router.get('/personalInformation', authenticate, personalInformationController.getAll);
 router.get('/personalInformation/:id', authenticate, personalInformationController.getOne);
-router.put('/personalInformation/:id', authenticate, isAdmin, personalInformationController.update);
-router.delete('/personalInformation/:id', authenticate, isAdmin, personalInformationController.delete);
-
+router.put('/personalInformation/:id',isAdmin, personalInformationController.update);
+router.delete('/personalInformation/:id',isAdmin, personalInformationController.delete);
 
 // Medical Information routes
 //router.get('/medicalInformation', medicalInformationController.getAll);
