@@ -301,6 +301,3 @@ export const DELETE_EMPLOYMENT = gql`
     deleteEmployment(id: $deleteEmploymentId)
   }
 `;
-
-
-// Add mutations for PersonalInformation, MedicalInformation, History, Education, and Employment for the problem to be solved. Ask ChatGPT to finish the rest of the code to complete this problem

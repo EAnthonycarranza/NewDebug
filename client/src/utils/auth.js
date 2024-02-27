@@ -1,78 +1,82 @@
-import { jwtDecode } from 'jwt-decode';
+// client/src/utils/auth.js
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
-class AuthService {
-  getProfile() {
-    let decoded = null; // Define decoded here with a default value
+const AuthContext = createContext();
 
+export const useAuth = () => useContext(AuthContext);
+
+export const getUserIdFromToken = (token) => {
+    if (!token) return null;
     try {
-        
-      const token = this.getToken();
-      console.log("Token:", token); // Add this line for debugging
-      if (!token) return null;
-
-      decoded = jwtDecode(token);// Assign a value to decoded
-      console.log("Decoded Token:", decoded); // Add this line for debugging
+        console.log('Token:', token); // Log the token
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        console.log('Decoded payload:', payload); // Log the decoded payload
+        return payload.userId;
     } catch (error) {
-      console.error("Error decoding token:", error.message);
-      return null;
+        console.error('Error decoding token:', error);
+        return null;
     }
+};
 
-    return decoded; // Return the decoded token
-  }
-  
-  isAdmin() {
-    const profile = this.getProfile();
-    return profile?.isAdmin || false; // Assuming the token includes an 'isAdmin' field
-  }
-  
-  isAuthenticated() {
-    const token = this.getToken();
-    if (!token) return false;
-  
-    try {
-      const decoded = jwtDecode(token); // Use 'decoded' here
-      const currentTime = Date.now() / 1000;
-  
-      if (decoded.exp && decoded.exp < currentTime) { // Use 'decoded' instead of 'decodedToken'
-        console.log("Token has expired");
-        return false;
-      } else {
-        console.log("Token is valid");
-        return true;
-      }
-    } catch (error) {
-      console.error("Error decoding token:", error.message);
-      return false;
-    }
-  }  
+export const AuthProvider = ({ children }) => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [user, setUser] = useState(null);
+    const [personalInfoId, setPersonalInfoId] = useState(null);
 
-  loggedIn() {
-    const token = this.getToken();
-    return token && !this.isTokenExpired(token) ? true : false;
-  }
+    const setPersonalInfoIdAndStore = useCallback((id) => {
+        localStorage.setItem('personalInfoId', id);
+        setPersonalInfoId(id);
+    }, []);
 
-  isTokenExpired(token) {
-    const decoded = jwtDecode(token);
-    if (decoded.exp < Date.now() / 1000) {
-      localStorage.removeItem("id_token");
-      return true;
-    }
-    return false;
-  }
+    const fetchPersonalInfoId = async (userId, token) => {
+        const url = `/api/personalInformation/${userId}`;
+        try {
+            const response = await fetch(url, {
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            if (!response.ok) {
+                throw new Error(`Server responded with status ${response.status}`);
+            }
+            const data = await response.json();
+            setPersonalInfoIdAndStore(data.personalInfoId);
+        } catch (error) {
+            console.error(`Error fetching personal information ID: ${error}`);
+        }
+    };
 
-  getToken() {
-    return localStorage.getItem("id_token");
-  }
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            setIsAuthenticated(true);
+            const userId = getUserIdFromToken(token);
+            if (userId) fetchPersonalInfoId(userId, token).catch(console.error);
+        }
+    }, [fetchPersonalInfoId]);
 
-  login(idToken) {
-    localStorage.setItem("id_token", idToken);
-    window.location.assign("/");
-  }
+    const login = async (token, userData = null) => {
+        localStorage.setItem('token', token);
+        setIsAuthenticated(true);
+        setUser(userData);
+        const userId = getUserIdFromToken(token);
+        if (userId) await fetchPersonalInfoId(userId, token);
+    };
 
-  logout() {
-    localStorage.removeItem("id_token");
-    window.location.assign("/");
-  }
-}
+    const logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('personalInfoId');
+        setIsAuthenticated(false);
+        setUser(null);
+        setPersonalInfoId(null);
+    };
 
-export default new AuthService();
+    const value = {
+        isAuthenticated,
+        user,
+        personalInfoId,
+        login,
+        logout,
+        setPersonalInfoIdAndStore,
+    };
+
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};

@@ -1,55 +1,62 @@
+// client/src/components/LoginForm.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
-import { LOGIN_USER } from '../utils/mutations';
-import authService from '../utils/auth'; // Corrected import
+import { useAuth } from '../utils/auth'; // Import useAuth hook
 
-export default function LoginForm() {
-  const [formState, setFormState] = useState({ email: '', password: '' });
+const LoginForm = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+  const [error, setError] = useState(null);
+  const { login } = useAuth(); // Use useAuth hook to access login function
   const navigate = useNavigate();
-  const [login, { error }] = useMutation(LOGIN_USER);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const { data } = await login({
-        variables: { ...formState },
-      });
-      authService.login(data.login.token); // Correct usage of authService
-      navigate('/dashboard'); // Adjust as per your route
-    } catch (err) {
-      console.error('Login failed', err);
+      // Call login function with email and password
+      await login(formData.email, formData.password);
+      // If login succeeds, navigate to dashboard
+      navigate('/dashboard');
+    } catch (error) {
+      setError(error.message);
     }
   };
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
-  };
-
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="email"
-        name="email"
-        placeholder="Your email"
-        value={formState.email}
-        onChange={handleChange}
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={formState.password}
-        onChange={handleChange}
-      />
-      <button type="submit" disabled={!formState.email || !formState.password}>
-        Submit
-      </button>
-      {error && <div>Login failed</div>}
-    </form>
+    <div>
+      <h2>Login</h2>
+      {error && <div className="error">{error}</div>}
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit">Login</button>
+      </form>
+    </div>
   );
-}
+};
+
+export default LoginForm;
