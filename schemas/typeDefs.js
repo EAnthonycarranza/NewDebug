@@ -107,14 +107,14 @@ type Query {
   type History {
     substanceAbuseTreatment: String
     mentalHealthTreatment: String
-    previousHelpFromDSM: String
-    suicidalThoughts: String
-    arrested: String
-    involvedInCriminalJustice: String
+    previousHelpFromDSM: Boolean
+    suicidalThoughts: Boolean
+    arrested: Boolean
+    involvedInCriminalJustice: Boolean
     incarcerationDetails: IncarcerationDetails
     upcomingCourtDates: String
     probationOfficerDetails: String
-    alcoholOrDrugUse: String
+    alcoholOrDrugUse: Boolean
     preferredSubstance: String
     lastUsed: String
   }

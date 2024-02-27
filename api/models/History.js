@@ -12,7 +12,7 @@ const historySchema = new mongoose.Schema({
       charge: String,
       location: String
     },
-    upcomingCourtDates: [String],
+    upcomingCourtDates: String,
     probationOfficerDetails: {
       name: String,
       contact: String
