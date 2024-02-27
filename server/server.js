@@ -1,5 +1,4 @@
 // server.js
-
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./schemas');
@@ -8,8 +7,11 @@ const bodyParser = require('body-parser');
 const userController = require('./api/controllers/users');
 const router = require('./api/routes');
 const User = require('./api/models/User');
-const app = express();
 const cors = require('cors');
+
+const app = express();
+
+app.use(cors());
 
 // Parse incoming request bodies
 app.use(bodyParser.json());
@@ -46,8 +48,6 @@ async function initializeAdminUser() {
   
   // Call the initializeAdminUser function
   initializeAdminUser();
-
-  app.use(cors());
 
 const startServer = async () => {
   const server = new ApolloServer({
