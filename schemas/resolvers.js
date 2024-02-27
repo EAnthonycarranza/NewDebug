@@ -98,13 +98,19 @@ const resolvers = {
           const token = signToken(user);
           return { token, user };
         },
-        createAdmissionAgreement: async (_, { agreementAcknowledgement }) => {
-          const newAgreement = new AdmissionAgreement({ agreementAcknowledgement });
-          await newAgreement.save();
-          return newAgreement;
-        },
-        updateAdmissionAgreement: async (_, { id, agreementAcknowledgement }) => {
-          const updatedAgreement = await AdmissionAgreement.findByIdAndUpdate(id, { agreementAcknowledgement }, { new: true });
+        createAdmissionAgreement: async (_, { input }) => {
+            const { studentSignature, witnessSignature, dateSigned } = input;
+            const newAgreement = new AdmissionAgreement({
+              studentSignature,
+              witnessSignature,
+              dateSigned
+            });
+            await newAgreement.save();
+            return newAgreement;
+          },
+          
+        updateAdmissionAgreement: async (_, { id, AdmissionAgreement}) => {
+          const updatedAgreement = await AdmissionAgreement.findByIdAndUpdate(id, { AdmissionAgreement }, { new: true });
           return updatedAgreement;
         },
         deleteAdmissionAgreement: async (_, { id }) => {

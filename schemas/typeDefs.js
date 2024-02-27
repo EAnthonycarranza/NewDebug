@@ -24,8 +24,8 @@ type Query {
     register(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
     adminLogin(email: String!, password: String!): Auth
-    createAdmissionAgreement(agreementAcknowledgement: AgreementAcknowledgementInput): AdmissionAgreement
-    updateAdmissionAgreement(agreementAcknowledgement: AgreementAcknowledgementInput): AdmissionAgreement
+    createAdmissionAgreement(admissionAgreement: AdmissionAgreementInput): AdmissionAgreement
+    updateAdmissionAgreement(admissionAgreement: AdmissionAgreementInput): AdmissionAgreement
     deleteAdmissionAgreement(id: ID!): Boolean
     createPersonalInformation(personalInfo: PersonalInformationInput): PersonalInformation
     updatePersonalInformation(id: ID!, personalInfo: PersonalInformationInput): PersonalInformation
@@ -58,7 +58,9 @@ type Query {
 
   type AdmissionAgreement {
     id: ID
-    agreementAcknowledgement: AgreementAcknowledgement
+    studentSignature: String
+    witnessSignature: String
+    dateSigned: String
   }
   
   type PersonalInformation {
@@ -146,12 +148,6 @@ type Query {
     phone: String
     alternatePhone: String
     relationship: String
-  }
-  
-  type AgreementAcknowledgement {
-    studentSignature: String
-    witnessSignature: String
-    dateSigned: String
   }
 
   input PersonalInformationInput {
@@ -248,7 +244,7 @@ type Query {
     relationship: String
   }
 
-  input AgreementAcknowledgementInput {
+  input AdmissionAgreementInput {
     studentSignature: String
     witnessSignature: String
     dateSigned: String
