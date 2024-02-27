@@ -1,5 +1,30 @@
 import { gql } from '@apollo/client';
 
+//Mutations for user logins
+export const ADMIN_LOGIN = gql`
+  mutation AdminLogin($email: String!, $password: String!) {
+    adminLogin(email: $email, password: $password) {
+      token
+      user {
+        _id
+        email
+      }
+    }
+  }
+`;
+
+export const LOGIN_USER = gql`
+  mutation loginUser($email: String!, $password: String!) {
+    loginUser(email: $email, password: $password) {
+      token
+      user {
+        _id
+        username
+      }
+    }
+  }
+`;
+
 // Mutation for creating a new admission agreement
 export const CREATE_ADMISSION_AGREEMENT = gql`
   mutation CreateAdmissionAgreement($agreementAcknowledgement: AgreementAcknowledgementInput!) {
