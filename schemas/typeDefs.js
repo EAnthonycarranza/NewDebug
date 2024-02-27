@@ -127,7 +127,7 @@ type Query {
   
   type Medication {
     name: String!
-    dosage: String!
+    dosage: String
   }
   
   type MedicalInformation {
@@ -222,7 +222,7 @@ type Query {
   
   input MedicationInput {
     name: String!
-    dosage: String!
+    dosage: String
   }
 
   input MedicalInformationInput {
