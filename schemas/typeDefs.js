@@ -125,10 +125,15 @@ type Query {
     location: String
   }
   
+  type Medication {
+    name: String!
+    dosage: String!
+  }
+  
   type MedicalInformation {
     healthCare: String
     terminalIllnesses: String
-    currentMedications: String
+    currentMedications: [Medication]
   }
   
   type EmergencyContact {
@@ -214,11 +219,16 @@ type Query {
     charge: String
     location: String
   }
+  
+  input MedicationInput {
+    name: String!
+    dosage: String!
+  }
 
   input MedicalInformationInput {
     healthCare: String
     terminalIllnesses: String
-    currentMedications: String
+    currentMedications: [MedicationInput!]
   }
 
   input EmergencyContactInput {
