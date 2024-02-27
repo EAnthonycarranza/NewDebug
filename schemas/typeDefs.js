@@ -24,8 +24,8 @@ type Query {
     register(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
     adminLogin(email: String!, password: String!): Auth
-    createAdmissionAgreement(personalInformation: PersonalInformationInput, agreementAcknowledgement: AgreementAcknowledgementInput): AdmissionAgreement
-    updateAdmissionAgreement(id: ID!, personalInformation: PersonalInformationInput, agreementAcknowledgement: AgreementAcknowledgementInput): AdmissionAgreement
+    createAdmissionAgreement(agreementAcknowledgement: AgreementAcknowledgementInput): AdmissionAgreement
+    updateAdmissionAgreement(agreementAcknowledgement: AgreementAcknowledgementInput): AdmissionAgreement
     deleteAdmissionAgreement(id: ID!): Boolean
     createPersonalInformation(personalInfo: PersonalInformationInput): PersonalInformation
     updatePersonalInformation(id: ID!, personalInfo: PersonalInformationInput): PersonalInformation
@@ -58,7 +58,6 @@ type Query {
 
   type AdmissionAgreement {
     id: ID
-    personalInformation: PersonalInformation
     agreementAcknowledgement: AgreementAcknowledgement
   }
   
@@ -90,7 +89,7 @@ type Query {
   type Education {
     highestGradeCompleted: String
     yearGraduated: String
-    collegeHoursCompleted: String
+    collegeHoursCompleted: Int
     degree: String
   }
   
@@ -104,6 +103,11 @@ type Query {
     specialSkills: String
   }
   
+  type ProbationOfficerDetails {
+    name: String
+    contact: String
+  }
+
   type History {
     substanceAbuseTreatment: String
     mentalHealthTreatment: String
@@ -113,7 +117,7 @@ type Query {
     involvedInCriminalJustice: Boolean
     incarcerationDetails: IncarcerationDetails
     upcomingCourtDates: String
-    probationOfficerDetails: String
+    probationOfficerDetails: ProbationOfficerDetails
     alcoholOrDrugUse: Boolean
     preferredSubstance: String
     lastUsed: String
@@ -185,7 +189,7 @@ type Query {
   input EducationInput {
     highestGradeCompleted: String
     yearGraduated: String
-    collegeHoursCompleted: String
+    collegeHoursCompleted: Int
     degree: String
   }
 
@@ -199,6 +203,11 @@ type Query {
     specialSkills: String
   }
 
+  input ProbationOfficerDetailsInput {
+    name: String
+    contact: String
+  }
+
   input HistoryInput {
     substanceAbuseTreatment: String
     mentalHealthTreatment: String
@@ -208,7 +217,7 @@ type Query {
     involvedInCriminalJustice: Boolean
     incarcerationDetails: IncarcerationDetailsInput
     upcomingCourtDates: String
-    probationOfficerDetails: String
+    probationOfficerDetails: ProbationOfficerDetailsInput
     alcoholOrDrugUse: Boolean
     preferredSubstance: String
     lastUsed: String
