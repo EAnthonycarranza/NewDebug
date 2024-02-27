@@ -9,6 +9,7 @@ const userController = require('./api/controllers/users');
 const router = require('./api/routes');
 const User = require('./api/models/User');
 const app = express();
+const cors = require('cors');
 
 // Parse incoming request bodies
 app.use(bodyParser.json());
@@ -45,6 +46,9 @@ async function initializeAdminUser() {
   
   // Call the initializeAdminUser function
   initializeAdminUser();
+
+  app.use(cors());
+
 const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
