@@ -17,6 +17,12 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Middleware to log incoming requests
+app.use((req, res, next) => {
+    console.log(`Incoming ${req.method} request to ${req.url}`);
+    next();
+  });  
+
 // Apply the router to your Express application
 app.use('/api', router);
 
@@ -49,23 +55,32 @@ async function initializeAdminUser() {
   // Call the initializeAdminUser function
   initializeAdminUser();
 
-const startServer = async () => {
-  const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    context: ({ req }) => req.headers,
-  });
-
-  await server.start();
-  server.applyMiddleware({ app });
-
-  const PORT = process.env.PORT || 4000;
-  db.once('open', () => {
-    app.listen(PORT, () => {
-      console.log(`API server running on port ${PORT}!`);
-      console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
+  const startServer = async () => {
+    const apolloServer = new ApolloServer({
+      typeDefs,
+      resolvers,
+      context: ({ req }) => req.headers,
+      debug: true,
+      formatError: (error) => {
+        console.error('GraphQL error:', error);
+        return error;
+      },
+      formatResponse: (response) => {
+        console.log('GraphQL response:', response);
+        return response;
+      },
     });
-  });
-};
-
+  
+    await apolloServer.start();
+    apolloServer.applyMiddleware({ app });
+  
+    const PORT = process.env.PORT || 4000;
+    db.once('open', () => {
+      app.listen(PORT, () => {
+        console.log(`API server running on port ${PORT}!`);
+        console.log(`Use GraphQL at http://localhost:${PORT}${apolloServer.graphqlPath}`);
+      });
+    });
+  };
+  
 startServer();
