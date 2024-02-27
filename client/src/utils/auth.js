@@ -8,15 +8,22 @@ export const useAuth = () => useContext(AuthContext);
 export const getUserIdFromToken = (token) => {
     if (!token) return null;
     try {
-        console.log('Token:', token); // Log the token
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        console.log('Decoded payload:', payload); // Log the decoded payload
-        return payload.userId;
+        // Split the token into its parts
+        const base64Url = token.split('.')[1];
+        // Replace '-' with '+' and '_' with '/' to correctly decode base64Url encoding
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        // Decode from Base64
+        const payload = atob(base64);
+        // Parse the payload as JSON
+        const parsed = JSON.parse(payload);
+        // Return the user ID from the payload
+        return parsed.userId;
     } catch (error) {
         console.error('Error decoding token:', error);
         return null;
     }
 };
+
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
