@@ -1,11 +1,11 @@
 import React from 'react';
-import PersonalInformation from './PersonalInformation';
+import PersonalInformation from './PersonalInformaion';
 
 const UserDashboard = () => {
     return (
         <div>
             <h1>User Dashboard</h1>
-            <PersonalInformation userId={'your-user-id-here'} />
+            <PersonalInformation id={'65df5420dc1744d694ec8255'} />
         </div>
     );
 };

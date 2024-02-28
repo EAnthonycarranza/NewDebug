@@ -54,58 +54,60 @@ export const GET_ADMISSION_AGREEMENT_BY_ID = gql`
 export const GET_ALL_PERSONAL_INFORMATION = gql`
   query GetAllPersonalInformation {
     getAllPersonalInformation {
-        date: String
-        lastName: String
-        firstName: String
-        middleName: String
-        dateOfBirth: String
-        age: String
-        ssn: String
-        dlOrIdNumber: String
-        stateIssued: String
-        revokedOrSuspendedDate: String
-        address: String
-        cityStateZip: String
-        homePhone: String
-        workPhone: String
-        gender: String
-        race: String
-        nationality: String
-        maritalStatus: String
-        usCitizen: String
-        residencyNumber: String
-        primaryLanguageSpoken: String
-        referredBy: String
+        id
+        date
+        lastName
+        firstName
+        middleName
+        dateOfBirth
+        age
+        ssn
+        dlOrIdNumber
+        stateIssued
+        revokedOrSuspendedDate
+        address
+        cityStateZip
+        homePhone
+        workPhone
+        gender
+        race
+        nationality
+        maritalStatus
+        usCitizen
+        residencyNumber
+        primaryLanguageSpoken
+        referredBy
     }
   }
 `;
 
 // Query to fetch a single personal information entry by ID
 export const GET_PERSONAL_INFORMATION_BY_ID = gql`
-  query GetPersonalInformationById($infoId: ID!) {
+query GetPersonalInformationById($infoId: ID!) {
     getPersonalInformation(id: $infoId) {
-        date: String
-        lastName: String
-        firstName: String
-        middleName: String
-        dateOfBirth: String
-        age: String
-        ssn: String
-        dlOrIdNumber: String
-        stateIssued: String
-        revokedOrSuspendedDate: String
-        address: String
-        cityStateZip: String
-        homePhone: String
-        workPhone: String
-        gender: String
-        race: String
-        nationality: String
-        maritalStatus: String
-        usCitizen: String
-        residencyNumber: String
-        primaryLanguageSpoken: String
-        referredBy: String
+        id
+        date
+        lastName
+        firstName
+        middleName
+        dateOfBirth
+        age
+        ssn
+        dlOrIdNumber
+        stateIssued
+        revokedOrSuspendedDate
+        address
+        cityStateZip
+        homePhone
+        workPhone
+        gender
+        race
+        nationality
+        maritalStatus
+        usCitizen
+        residencyNumber
+        primaryLanguageSpoken
+        referredBy
     }
   }
 `;

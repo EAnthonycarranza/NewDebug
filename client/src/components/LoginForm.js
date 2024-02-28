@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { LOGIN } from '../utils/mutations';
 import { login } from '../utils/auth';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
+    const navigate = useNavigate();
     const [formState, setFormState] = useState({ email: '', password: '' });
     const [loginSuccess, setLoginSuccess] = useState(false);
     const [loginUserMutation, { loading, error }] = useMutation(LOGIN, {
@@ -11,7 +13,8 @@ const LoginForm = () => {
             login(data.login.token); // Save the token
             setLoginSuccess(true); // Set login success state to true
             console.log('Login Response:', JSON.stringify(data, null, 2)); // Log the JSON response
-            // Optionally, redirect or perform additional actions after successful login
+            // Redirect to the user's dashboard with their ID
+            navigate(`/personalinformation/${data.login.user.id}`);
         },
         onError: (error) => {
             // Handle errors
@@ -19,6 +22,7 @@ const LoginForm = () => {
             console.error('Error logging in:', error);
         },
     });
+    
 
     const handleChange = (event) => {
         const { name, value } = event.target;

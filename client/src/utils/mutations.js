@@ -103,28 +103,29 @@ export const DELETE_USER = gql`
 export const CREATE_PERSONAL_INFORMATION = gql`
   mutation CreatePersonalInformation($personalInfo: PersonalInformationInput!) {
     createPersonalInformation(personalInfo: $personalInfo) {
-        date: String
-        lastName: String
-        firstName: String
-        middleName: String
-        dateOfBirth: String
-        age: String
-        ssn: String
-        dlOrIdNumber: String
-        stateIssued: String
-        revokedOrSuspendedDate: String
-        address: String
-        cityStateZip: String
-        homePhone: String
-        workPhone: String
-        gender: String
-        race: String
-        nationality: String
-        maritalStatus: String
-        usCitizen: String
-        residencyNumber: String
-        primaryLanguageSpoken: String
-        referredBy: String
+        
+        date
+        lastName
+        firstName
+        middleName
+        dateOfBirth
+        age
+        ssn
+        dlOrIdNumber
+        stateIssued
+        revokedOrSuspendedDate
+        address
+        cityStateZip
+        homePhone
+        workPhone
+        gender
+        race
+        nationality
+        maritalStatus
+        usCitizen
+        residencyNumber
+        primaryLanguageSpoken
+        referredBy
     }
   }
 `;
@@ -132,28 +133,28 @@ export const CREATE_PERSONAL_INFORMATION = gql`
 export const UPDATE_PERSONAL_INFORMATION = gql`
   mutation UpdatePersonalInformation($id: ID!, $personalInfo: PersonalInformationInput!) {
     updatePersonalInformation(id: $id, personalInfo: $personalInfo) {
-        date: String
-        lastName: String
-        firstName: String
-        middleName: String
-        dateOfBirth: String
-        age: String
-        ssn: String
-        dlOrIdNumber: String
-        stateIssued: String
-        revokedOrSuspendedDate: String
-        address: String
-        cityStateZip: String
-        homePhone: String
-        workPhone: String
-        gender: String
-        race: String
-        nationality: String
-        maritalStatus: String
-        usCitizen: String
-        residencyNumber: String
-        primaryLanguageSpoken: String
-        referredBy: String
+        date
+        lastName
+        firstName
+        middleName
+        dateOfBirth
+        age
+        ssn
+        dlOrIdNumber
+        stateIssued
+        revokedOrSuspendedDate
+        address
+        cityStateZip
+        homePhone
+        workPhone
+        gender
+        race
+        nationality
+        maritalStatus
+        usCitizen
+        residencyNumber
+        primaryLanguageSpoken
+        referredBy
     }
   }
 `;
