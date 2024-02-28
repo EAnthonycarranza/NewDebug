@@ -47,7 +47,7 @@ const resolvers = {
         },
     Mutation: {
         addUser: async (_, { username, email, password }) => {
-          const hashedPassword = await bcrypt.hash(password, 10);
+          const hashedPassword = await bcrypt.hash(password, 12);
           const newUser = new User({ username, email, password: hashedPassword });
           await newUser.save();
           return newUser;
@@ -68,13 +68,19 @@ const resolvers = {
           return { token, user: newUser };
         },
         login: async (_, { email, password }) => {
-          const user = await User.findOne({ email });
-          if (!user || !(await bcrypt.compare(password, user.password))) {
-            throw new AuthenticationError('Invalid credentials');
-          }
-          const token = signToken(user);
-          return { token, user };
-        },
+            const user = await User.findOne({ email: email.toLowerCase() });
+            if (!user) {
+              throw new AuthenticationError('User not found');
+            }
+            console.log(`User found: ${!!user}`);
+            const isValid = await bcrypt.compare(password, user.password);
+            console.log(`Password valid: ${isValid}`);
+            if (!isValid) {
+              throw new AuthenticationError('Invalid credentials');
+            }            
+            const token = signToken(user);
+            return { token, user };
+          },                         
         adminLogin: async (_, { email, password }) => {
           const user = await User.findOne({ email, isAdmin: true });
           if (!user || !(await bcrypt.compare(password, user.password))) {

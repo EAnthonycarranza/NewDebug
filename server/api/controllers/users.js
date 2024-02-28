@@ -5,25 +5,24 @@ const { signToken } = require('../../utils/auth');
 // Handle user login
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: args.email });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      throw new Error('User not found');
+    }    
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
-
-    if (!passwordMatch) {
-      console.log('Password incorrect'); // Add this log
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-    
-    console.log('Login successful'); // Add this log
+    // User matched, generate a token
     const token = signToken({ email: user.email, username: user.username, _id: user._id });
-    res.json({ token, user: { id: user._id, email: user.email, username: user.username } });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Internal server error' });
+
+    res.json({ token, message: 'Login successful' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
