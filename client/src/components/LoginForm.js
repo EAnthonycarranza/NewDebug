@@ -15,7 +15,7 @@ const LoginForm = () => {
             console.log('Login Response:', JSON.stringify(data, null, 2)); // Log the JSON response
             // Redirect to the user's dashboard with their ID
             navigate(`/personalinformation/${data.login.user.id}`);
-        },
+        },        
         onError: (error) => {
             // Handle errors
             setLoginSuccess(false); // Ensure login success is false upon error
