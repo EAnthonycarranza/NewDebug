@@ -23,11 +23,14 @@ const userSchema = new mongoose.Schema({
 });
 
 // Pre-save hook to hash the password
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 12);
-  next();
-});
+userSchema.pre('save', function(next) {
+    if (!this.isModified('password')) return next();
+    bcrypt.hash(this.password, 12, (err, hash) => {
+      if (err) return next(err);
+      this.password = hash;
+      next();
+    });
+  });
 
 // Method to check the password validity
 userSchema.methods.isValidPassword = async function (candidatePassword) {

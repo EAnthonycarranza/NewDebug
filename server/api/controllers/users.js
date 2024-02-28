@@ -1,28 +1,60 @@
 const bcrypt = require('bcryptjs');
 const { User } = require('../models');
-const { signToken } = require('../../utils/auth');
+const jwt = require('jsonwebtoken'); // Make sure to import jwt if you're using it for token generation
+
+// Assuming your signToken function looks something like this:
+const signToken = (user) => {
+  return jwt.sign(
+    { 
+      email: user.email, 
+      username: user.username, 
+      _id: user._id 
+    },
+    process.env.JWT_SECRET, // Ensure you have your JWT_SECRET in your .env file
+    { expiresIn: '1h' } // Token expires in 1 hour
+  );
+};
 
 // Handle user login
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
+  console.log(`Attempting login with:`, { email }); // Log without password for security
+
   try {
-    const user = await User.findOne({ email: args.email });
+    const user = await User.findOne({ email: email.toLowerCase() }); // Ensure email is case-insensitive
     if (!user) {
-      throw new Error('User not found');
-    }    
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      console.log('Login attempt failed: User not found');
+      return res.status(401).json({ message: 'User not found or invalid credentials' });
     }
 
-    // User matched, generate a token
-    const token = signToken({ email: user.email, username: user.username, _id: user._id });
+    // Compare provided password with hashed password in database
+    const isValid = await bcrypt.compare(password, user.password);
+    console.log(`Password comparison result: ${isValid}`);
 
-    res.json({ token, message: 'Login successful' });
+    if (!isValid) {
+      console.log(`Logging in with email: ${email} and password: ${password}`);
+      console.log(`Hashed password in DB for comparison: ${user.password}`);
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // If password matches, generate token
+    const token = signToken(user);
+    console.log('Login successful, token generated');
+
+    // Send back token and user info
+    res.json({ 
+      message: 'Login successful', 
+      token, 
+      user: { 
+        id: user._id, 
+        email: user.email, 
+        username: user.username 
+      } 
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Login attempt error:', error);
+    res.status(500).json({ message: 'Server error during login attempt' });
   }
 };
 
@@ -51,28 +83,20 @@ exports.adminLogin = async (req, res) => {
 
 exports.register = async (req, res) => {
   const { username, email, password } = req.body;
+  console.log(`Registering user:`, { username, email }); // Log without password for security
   try {
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).send('User already exists');
     }
-
-    const newUser = new User({
-      username,
-      email,
-      password,
-      role: 'user'
-    });
-
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
-
-    // Generate token
     const token = signToken(newUser);
-    res.status(201).json({ token, user: { id: newUser.id, email: newUser.email, username: newUser.username } });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(201).json({ token, user: newUser });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
   }
 };
 

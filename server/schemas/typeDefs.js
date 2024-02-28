@@ -22,7 +22,7 @@ type Query {
     updateUser(id: ID!, username: String, email: String, password: String): User
     deleteUser(id: ID!): Boolean
     register(username: String!, email: String!, password: String!): Auth
-    login(email: String!, password: String!): Auth
+    login(email: String!, password: String!): AuthPayload
     adminLogin(email: String!, password: String!): Auth
     createAdmissionAgreement(agreementAcknowledgement: AgreementAcknowledgementInput): AdmissionAgreement
     updateAdmissionAgreement(id: ID!, agreementAcknowledgement: AgreementAcknowledgementInput): AdmissionAgreement
@@ -42,6 +42,11 @@ type Query {
     createEmployment(employment: EmploymentInput): Employment
     updateEmployment(id: ID!, employment: EmploymentInput): Employment
     deleteEmployment(id: ID!): Boolean
+  }
+
+  type AuthPayload {
+    token: String!
+    user: User
   }
 
   type User {

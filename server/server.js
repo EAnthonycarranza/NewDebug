@@ -8,6 +8,53 @@ const userController = require('./api/controllers/users');
 const router = require('./api/routes');
 const User = require('./api/models/User');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+// Function to sign tokens
+const signToken = (user) => {
+    return jwt.sign(
+      { email: user.email, username: user.username, _id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '2h' }
+    );
+  };
+  
+  // Function to automatically register and login a hardcoded user
+  const autoRegisterAndLogin = async () => {
+    const hardcodedUser = {
+      username: "autoUser",
+      email: "auto@example.com",
+      password: "autoPassword123",
+    };
+  
+    console.log("Attempting auto-registration and auto-login...");
+  
+    // Attempt to find the user first to avoid duplicating
+    let user = await User.findOne({ email: hardcodedUser.email });
+    if (!user) {
+      // Hash password
+      const hashedPassword = await bcrypt.hash(hardcodedUser.password, 12);
+      // Create new user
+      user = new User({
+        username: hardcodedUser.username,
+        email: hardcodedUser.email,
+        password: hardcodedUser.password,
+    });
+      await user.save();
+      console.log("Auto-registered user:", user);
+    } else {
+      console.log("User already exists, proceeding to auto-login");
+    }
+  
+    // Auto-login
+    const isValid = await bcrypt.compare(hardcodedUser.password, user.password);
+    if (isValid) {
+      console.log("Auto-login successful for:", user.email);
+    } else {
+      console.error("Auto-login failed due to password mismatch. Check password hashing and comparison.");
+    }
+  };
 
 const app = express();
 
@@ -79,6 +126,7 @@ async function initializeAdminUser() {
       app.listen(PORT, () => {
         console.log(`API server running on port ${PORT}!`);
         console.log(`Use GraphQL at http://localhost:${PORT}${apolloServer.graphqlPath}`);
+        autoRegisterAndLogin();
       });
     });
   };
