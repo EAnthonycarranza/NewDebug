@@ -24,6 +24,8 @@ const personalInformationSchema = new mongoose.Schema({
   primaryLanguageSpoken: String,
   referredBy: String,
 });
-
+personalInformationSchema.virtual('fullName').get(function () {
+    return `${this.firstName} ${this.lastName}`;
+  });
 const PersonalInformation = mongoose.model('PersonalInformation', personalInformationSchema);
 module.exports = PersonalInformation;
