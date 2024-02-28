@@ -1,5 +1,18 @@
 import { gql } from '@apollo/client';
 
+export const REGISTER_USER = gql`
+  mutation Register($username: String!, $email: String!, $password: String!) {
+    register(username: $username, email: $email, password: $password) {
+      token
+      user {
+        _id
+        username
+        email
+      }
+    }
+  }
+`;
+
 //Mutations for user logins
 export const ADMIN_LOGIN = gql`
   mutation AdminLogin($email: String!, $password: String!) {
@@ -13,9 +26,9 @@ export const ADMIN_LOGIN = gql`
   }
 `;
 
-export const LOGIN_USER = gql`
-  mutation loginUser($email: String!, $password: String!) {
-    loginUser(email: $email, password: $password) {
+export const LOGIN = gql`
+  mutation login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
       token
       user {
         _id
@@ -24,6 +37,7 @@ export const LOGIN_USER = gql`
     }
   }
 `;
+
 
 // Mutation for creating a new admission agreement
 export const CREATE_ADMISSION_AGREEMENT = gql`
