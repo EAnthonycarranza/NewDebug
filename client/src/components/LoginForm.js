@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { LOGIN } from '../utils/mutations';
 import { login } from '../utils/auth';
@@ -13,16 +13,21 @@ const LoginForm = () => {
             login(data.login.token); // Save the token
             setLoginSuccess(true); // Set login success state to true
             console.log('Login Response:', JSON.stringify(data, null, 2)); // Log the JSON response
-            // Redirect to the user's dashboard with their ID
-            navigate(`/form`);
-        },        
+        },
         onError: (error) => {
             // Handle errors
             setLoginSuccess(false); // Ensure login success is false upon error
             console.error('Error logging in:', error);
         },
     });
-    
+
+    // useEffect to navigate to /form upon successful login
+    useEffect(() => {
+        if (loginSuccess) {
+            // Navigate to /form only if login was successful
+            navigate(`/form`);
+        }
+    }, [loginSuccess, navigate]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -30,8 +35,6 @@ const LoginForm = () => {
             ...prev,
             [name]: value,
         }));
-        // Reset login success state upon starting a new login attempt
-        if (loginSuccess) setLoginSuccess(false);
     };
 
     const handleSubmit = async (event) => {

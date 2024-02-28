@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { CREATE_PERSONAL_INFORMATION } from '../utils/mutations';
@@ -31,9 +31,14 @@ const CompositeForm = () => {
         referredBy: ''
     });
 
+    useEffect(() => {
+        // Retrieve and log the token as soon as the component mounts
+        const token = localStorage.getItem('token');
+        console.log("Token upon component mount:", token);
+    }, []); // The empty array ensures this runs once on mount
+
     const [createPersonalInformation, { error }] = useMutation(CREATE_PERSONAL_INFORMATION, {
         onCompleted: (data) => {
-            // Assuming your schema exposes the MongoDB _id as id
             const createdId = data.createPersonalInformation.id; 
             navigate(`/personalinformation/${createdId}`);
         },
@@ -41,7 +46,6 @@ const CompositeForm = () => {
             console.error("Error creating personal information:", error);
         }
     });
-    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
