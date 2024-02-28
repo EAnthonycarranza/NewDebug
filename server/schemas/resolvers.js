@@ -3,28 +3,6 @@ const { AuthenticationError } = require('apollo-server-express');
 const { signToken } = require('../utils/auth');
 const bcrypt = require('bcryptjs');
 
-
-const getPersonalInformation = async ({ id }) => {
-    try {
-      // Ensure 'id' property exists
-      if (!id) {
-        throw new Error('ID is missing.');
-      }
-  
-      const personalInformation = await PersonalInformation.findOne({ _id: id });
-
-      if (!personalInformation) {
-        throw new Error('Personal information not found.');
-      }
-      
-      return personalInformation;
-    } catch (error) {
-      console.error('Error fetching personal information:', error);
-      throw new Error('Failed to fetch personal information');
-    }
-};
-
-
 const resolvers = {
         Query: {
           async users() {
@@ -36,7 +14,9 @@ const resolvers = {
           async getAllAdmissionAgreements() {
             return await AdmissionAgreement.find({});
           },
-          getPersonalInformation, // Ensure 'getPersonalInformation' resolver is correctly referenced
+          async getPersonalInformation(_, { id }) {
+            return await PersonalInformation.findById(id);
+          },
           async getAllPersonalInformation() {
             return await PersonalInformation.find({});
           },
@@ -168,10 +148,12 @@ const resolvers = {
         createPersonalInformation: async (_, { personalInfo }) => {
             const newPersonalInfo = new PersonalInformation(personalInfo);
             await newPersonalInfo.save();
-            console.log("New Personal Information Created:", newPersonalInfo._id); // Access the generated _id
-            return newPersonalInfo.toObject(); // Convert the Mongoose document to a plain JavaScript object
-          },
-          
+            return {
+                id: newPersonalInfo._id.toString(), // Map _id to id
+                ...newPersonalInfo.toObject(),
+            };
+        },
+           
         updatePersonalInformation: async (_, { id, personalInfo }) => {
           const updatedPersonalInfo = await PersonalInformation.findByIdAndUpdate(id, personalInfo, { new: true });
           return updatedPersonalInfo;

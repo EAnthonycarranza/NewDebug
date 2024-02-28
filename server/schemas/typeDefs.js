@@ -67,7 +67,7 @@
     }
     
     type PersonalInformation {
-        id: ID
+        id: ID!
         date: String
         lastName: String
         firstName: String
