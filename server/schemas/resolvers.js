@@ -14,9 +14,23 @@ const resolvers = {
           async getAllAdmissionAgreements() {
             return await AdmissionAgreement.find({});
           },
-          async getPersonalInformation(_, { id }) {
-            return await PersonalInformation.findById(id);
-          },
+          async getPersonalInformation(_, { id }, { user }) {
+            if (!user || !user.id) {
+                throw new Error('Authentication required.');
+            }
+    
+            const personalInfo = await PersonalInformation.findById(id);
+            if (!personalInfo) {
+                throw new Error('Personal information not found.');
+            }
+    
+            // Check if personalInfo has a userId field and compare it to user._id
+            if (!personalInfo.userId || personalInfo.userId.toString() !== user.id) {
+                throw new Error('Not authorized to view this personal information.');
+            }
+    
+            return personalInfo;
+        },
           async getAllPersonalInformation() {
             return await PersonalInformation.find({});
           },
@@ -145,15 +159,23 @@ const resolvers = {
           await AdmissionAgreement.findByIdAndDelete(id);
           return true;
         },
-        createPersonalInformation: async (_, { personalInfo }) => {
-            const newPersonalInfo = new PersonalInformation(personalInfo);
-            await newPersonalInfo.save();
-            return {
-                id: newPersonalInfo._id.toString(), // Map _id to id
-                ...newPersonalInfo.toObject(),
-            };
-        },
-           
+        createPersonalInformation: async (_, { personalInfo }, context) => {
+            if (!context.user) {
+                throw new Error('You must be logged in to post personal information.');
+            }
+        
+            // Add the user ID to the personal information
+            personalInfo.userId = context.user._id;
+        
+            // Create the personal information
+            const newPersonalInfo = await PersonalInformation.create(personalInfo);
+        
+            // Fetch the newly created personal information with its full data
+            const createdPersonalInfo = await PersonalInformation.findById(newPersonalInfo._id).lean();
+        
+            // Return the newly created personal information
+            return createdPersonalInfo;
+        },        
         updatePersonalInformation: async (_, { id, personalInfo }) => {
           const updatedPersonalInfo = await PersonalInformation.findByIdAndUpdate(id, personalInfo, { new: true });
           return updatedPersonalInfo;

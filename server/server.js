@@ -11,6 +11,7 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+
 // Function to sign tokens
 const signToken = (user) => {
     return jwt.sign(
@@ -106,7 +107,10 @@ async function initializeAdminUser() {
     const apolloServer = new ApolloServer({
       typeDefs,
       resolvers,
-      context: ({ req }) => req.headers,
+      context: ({ req }) => {
+        // If the authenticateToken middleware has added a user to the req, pass it through to the resolvers
+        return { user: req.user };
+      },
       debug: true,
       formatError: (error) => {
         console.error('GraphQL error:', error);
