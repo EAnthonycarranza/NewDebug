@@ -6,6 +6,7 @@ import { CREATE_PERSONAL_INFORMATION } from '../utils/mutations';
 const CompositeForm = () => {
     const navigate = useNavigate();
     const [formState, setFormState] = useState({
+        // Initial form state setup
         date: '',
         lastName: '',
         firstName: '',
@@ -31,13 +32,16 @@ const CompositeForm = () => {
     });
 
     const [createPersonalInformation, { error }] = useMutation(CREATE_PERSONAL_INFORMATION, {
-        onCompleted: () => {
-            navigate('/');
+        onCompleted: (data) => {
+            // Assuming your schema exposes the MongoDB _id as id
+            const createdId = data.createPersonalInformation.id; 
+            navigate(`/personalinformation/${createdId}`);
         },
         onError: (error) => {
             console.error("Error creating personal information:", error);
         }
     });
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;

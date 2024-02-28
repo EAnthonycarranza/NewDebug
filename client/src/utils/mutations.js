@@ -103,7 +103,7 @@ export const DELETE_USER = gql`
 export const CREATE_PERSONAL_INFORMATION = gql`
   mutation CreatePersonalInformation($personalInfo: PersonalInformationInput!) {
     createPersonalInformation(personalInfo: $personalInfo) {
-        
+        id
         date
         lastName
         firstName
