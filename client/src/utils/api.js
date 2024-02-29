@@ -1,29 +1,28 @@
-import { ApolloClient, InMemoryCache, HttpLink, ApolloLink } from '@apollo/client';
+// src/utils/api.js
+import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 
-// Define your HttpLink
-const httpLink = new HttpLink({ uri: 'http://localhost:3001/graphql' });
-
-// Ensure this authLink setup is correctly applied in your Apollo Client setup
-const authLink = setContext((_, { headers }) => {
-    const token = localStorage.getItem('token');
-    return {
-      headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : "",
-      }
-    };
-  });  
-
-// Define the debugLink for logging
-const debugLink = new ApolloLink((operation, forward) => {
-  console.log(`[GraphQL Request]: ${operation.operationName}`, operation.getContext().headers);
-  return forward(operation);
+// HTTP connection to the API
+const httpLink = createHttpLink({
+  uri: 'http://localhost:3001/graphql', // Ensure this is your correct GraphQL endpoint
 });
 
-// Combine the links and create the ApolloClient instance
+// Middleware for attaching the token to requests
+const authLink = setContext((_, { headers }) => {
+  // Retrieve the authentication token from local storage if it exists
+  const token = localStorage.getItem('token');
+  // Return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    }
+  };
+});
+
+// Apollo Client instance
 const client = new ApolloClient({
-  link: ApolloLink.from([authLink, debugLink, httpLink]), // Order matters here
+  link: authLink.concat(httpLink), // Chain it with the httpLink
   cache: new InMemoryCache(),
 });
 

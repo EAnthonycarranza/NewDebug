@@ -1,13 +1,15 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_PERSONAL_INFORMATION_BY_ID } from '../utils/queries';
+import client from '../utils/api'; 
 
 const PersonalInformation = ({ personalInfoId }) => {
-  // Use the personalInfoId prop directly for the query
-  const { loading, error, data } = useQuery(GET_PERSONAL_INFORMATION_BY_ID, {
-    variables: { infoId: personalInfoId },
-    skip: !personalInfoId, // Skip the query if personalInfoId is falsy
-  });
+    // Ensure the Apollo Client instance is being used here
+    const { loading, error, data } = useQuery(GET_PERSONAL_INFORMATION_BY_ID, {
+      variables: { infoId: personalInfoId },
+      skip: !personalInfoId, // Skip the query if personalInfoId is falsy
+      client: client, // Explicitly pass the Apollo Client instance if not globally available via ApolloProvider
+    });
 
   // Log to see if the query is being executed and with what variable
   console.log(`Querying for personalInfoId: ${personalInfoId}`);
