@@ -159,23 +159,16 @@ const resolvers = {
           await AdmissionAgreement.findByIdAndDelete(id);
           return true;
         },
-        createPersonalInformation: async (_, { personalInfo }, context) => {
-            if (!context.user) {
-                throw new Error('You must be logged in to post personal information.');
+        createPersonalInformation: async (_, { personalInfo }, { user }) => {
+            if (!user) {
+              throw new Error("You must be logged in to post personal information.");
             }
-        
-            // Add the user ID to the personal information
-            personalInfo.userId = context.user._id;
-        
-            // Create the personal information
-            const newPersonalInfo = await PersonalInformation.create(personalInfo);
-        
-            // Fetch the newly created personal information with its full data
-            const createdPersonalInfo = await PersonalInformation.findById(newPersonalInfo._id).lean();
-        
-            // Return the newly created personal information
-            return createdPersonalInfo;
-        },        
+            // Now proceed with creating personal information using the user's ID
+            // Here, make sure PersonalInformationModel is correctly imported and used
+            const newPersonalInfo = await PersonalInformation.create({ ...personalInfo, userId: user._id });
+            return newPersonalInfo;
+          },
+            
         updatePersonalInformation: async (_, { id, personalInfo }) => {
           const updatedPersonalInfo = await PersonalInformation.findByIdAndUpdate(id, personalInfo, { new: true });
           return updatedPersonalInfo;

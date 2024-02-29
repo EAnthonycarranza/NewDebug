@@ -27,7 +27,7 @@
         createAdmissionAgreement(agreementAcknowledgement: AgreementAcknowledgementInput): AdmissionAgreement
         updateAdmissionAgreement(id: ID!, agreementAcknowledgement: AgreementAcknowledgementInput): AdmissionAgreement
         deleteAdmissionAgreement(id: ID!): Boolean
-        createPersonalInformation(personalInfo: PersonalInformationInput): PersonalInformation
+        createPersonalInformation(personalInfo: PersonalInformationInput!): PersonalInformation!
         updatePersonalInformation(id: ID!, personalInfo: PersonalInformationInput): PersonalInformation
         deletePersonalInformation(id: ID!): Boolean
         createMedicalInformation(medicalInfo: MedicalInformationInput): MedicalInformation

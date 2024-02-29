@@ -66,10 +66,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Middleware to log incoming requests
-app.use((req, res, next) => {
-    console.log(`Incoming ${req.method} request to ${req.url}`);
+app.use((req, _, next) => {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7, authHeader.length); // Skip 'Bearer '
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+      } catch (error) {
+        console.error('Token verification error:', error.message);
+      }
+    }
     next();
-  });  
+  });
+  
 
 // Apply the router to your Express application
 app.use('/api', router);
@@ -105,12 +115,13 @@ async function initializeAdminUser() {
 
   const startServer = async () => {
     const apolloServer = new ApolloServer({
-      typeDefs,
-      resolvers,
-      context: ({ req }) => {
-        // If the authenticateToken middleware has added a user to the req, pass it through to the resolvers
-        return { user: req.user };
-      },
+        typeDefs,
+        resolvers,
+        context: ({ req }) => {
+          // Here, you're assuming req.user is already populated by your Express middleware
+          // Make sure the token verification middleware runs before ApolloServer middleware
+          return { user: req.user };
+        },
       debug: true,
       formatError: (error) => {
         console.error('GraphQL error:', error);
