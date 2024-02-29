@@ -4,30 +4,17 @@ import { GET_PERSONAL_INFORMATION_BY_ID } from '../utils/queries';
 import client from '../utils/api'; 
 
 const PersonalInformation = ({ personalInfoId }) => {
-    // Ensure the Apollo Client instance is being used here
+    // Use the personalInfoId prop directly for the query
     const { loading, error, data } = useQuery(GET_PERSONAL_INFORMATION_BY_ID, {
       variables: { infoId: personalInfoId },
       skip: !personalInfoId, // Skip the query if personalInfoId is falsy
-      client: client, // Explicitly pass the Apollo Client instance if not globally available via ApolloProvider
     });
-
-  // Log to see if the query is being executed and with what variable
-  console.log(`Querying for personalInfoId: ${personalInfoId}`);
-
-  // Log the loading state
-  if (loading) {
-    console.log('Loading personal information...');
-    return <div>Loading...</div>;
-  }
-
-  // Log any errors encountered during the query
-  if (error) {
-    console.error('Error fetching personal information:', error.message);
-    return <div>Error! {error.message}</div>;
-  }
-
-  // Log the received data
-  console.log('Received data:', data);
+  
+    // Log to see if the query is being executed and with what variable
+    console.log(`Querying for personalInfoId: ${personalInfoId}`);
+  
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error! {error.message}</div>;
 
   return (
     <div>
